@@ -30,37 +30,21 @@ for letter in alphabet:
             elif university_name:
                 # Collect the data into a dictionary
                 row_data = [td.get_text(strip=True) for td in row.find_all('td')]
-                if row_data:
+                if len(row_data) >= 3 and row_data[0] != 'PLAYER' and row_data[1] != 'TEAM' and row_data[2] != 'POSITION':
                     university_data.append({
                         'University': university_name,
-                        'Data': ', '.join(row_data)  # Flatten the list into a single string
+                        'Player': row_data[0],
+                        'Team': row_data[1],
+                        'Position': row_data[2]
                     })
     else:
         print("Table not found")
 
 # Write the data to a CSV file
 with open('data/university_data.csv', 'w', newline='') as csvfile:
-    fieldnames = ['University', 'Data']
+    fieldnames = ['University', 'Player', 'Team', 'Position']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
     writer.writeheader()
-    for data in university_data:
-        writer.writerow(data)
+    writer.writerows(university_data)
 
 print("Data has been successfully written to data/university_data.csv")
-    
-
-def get_school_stats(school):
-    # Get the list of players for the school
-    players = university_data.get(school, [])
-    print(f'The current number of NFL players from {school} are: {len(players)}')
-    
-    # Print the dictionary entries for 'USC'
-    print(f'The Players of {school} are:')
-    for player in players:
-        print('\t' + '\t'.join(player))
-
-#get_school_stats('USC')
-#get_school_stats('UCLA')
-#get_school_stats('Air Force')
-#get_school_stats('Kansas State')
